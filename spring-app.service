@@ -1,0 +1,28 @@
+[Unit]
+Description=Spring Boot Application (app.jar)
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=spring-runner
+Group=spring-runner
+WorkingDirectory=/opt/spring-app
+
+# Cau hinh ket noi database va cong ung dung
+Environment="SERVER_PORT=8082"
+Environment="SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/springboot_db?useSSL=false&serverTimezone=UTC"
+Environment="SPRING_DATASOURCE_USERNAME=spring-admin"
+Environment="SPRING_DATASOURCE_PASSWORD=SpringSecure@123"
+
+ExecStart=/usr/bin/java -jar /opt/spring-app/app.jar
+
+# Tu dong khoi dong lai sau 10 giay neu ung dung bi crash
+Restart=on-failure
+RestartSec=10
+
+# Java thoat voi ma 143 khi nhan SIGTERM, coi day la thoat binh thuong
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
